@@ -1,0 +1,36 @@
+apiVersion: kubeless.io/v1beta1
+kind: Function
+metadata:
+name: get-python
+...
+spec:
+...
+ deployment:
+  spec:
+   template:
+    spec:
+     initContainers:
+     - resources:
+        limits:
+         cpu: 200m
+         memory: 200Mi
+        requests:
+         cpu: 200m
+         memory: 200Mi
+     containers:
+     - env:
+      - name: FOO
+        value: bar
+      name: ""
+      resources:
+       limits:
+        cpu: 100m
+        memory: 100Mi
+       requests:
+        cpu: 100m
+        memory: 100Mi
+      volumeMounts:
+      - mountPath: /my_secret
+        name: my-secret-vol
+     volumes:
+     - name: my-secret-vol

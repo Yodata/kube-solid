@@ -1,0 +1,29 @@
+Kubernetes introduces HorizontalPodAutoscaler for pod autoscaling. In kubeless, each function is deployed into a separate Kubernetes deployment, so naturally we leverage HPA to automatically scale function based on defined workload metrics.
+
+$kubeless autoscale --help
+autoscale command allows user to list, create, delete autoscale rule
+for function on Kubeless
+
+Usage:
+kubeless autoscale SUBCOMMAND [flags]
+kubeless autoscale [command]
+
+Available Commands:
+create: automatically scale function based on monitored metrics
+delete: delete an autoscale from Kubeless
+list: list all autoscales in Kubeless
+
+
+For example :
+
+Use command to autoscale your function:
+$ kubeless autoscale create <function name> metric cpu -min 1 --max 2 --value 50
+
+To check HPA:
+$ kubectl get hpa
+
+To describe HPA
+$ kubectl describe hpa
+
+To increase load on pod 
+$ for in i {1..100}; do <invoke function>; done

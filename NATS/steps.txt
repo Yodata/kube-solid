@@ -1,0 +1,41 @@
+Step1: kubectl apply -f 00-prereqs.yaml
+
+Step2: kubectl apply -f Deployment.yaml 
+
+Step3: create namespace
+$kubectl create ns nats-io\
+
+Step4: Once NATS operator is up and running run below command to deploy a NATS cluster Run:-
+echo '
+apiVersion: "nats.io/v1alpha2"
+kind: "NatsCluster"
+metadata:
+name: "nats"
+spec:
+size: 3
+version: "1.1.0"
+' | kubectl apply -f - -n nats-io
+
+Step5: Deploying Function
+Order_handler.py
+def order_handler(event, context):
+print event
+return event['data']
+$ kubeless function deploy order-handler --runtime python2.7 --handler
+order_hanlder.order_handler --from-file order_handler.py
+
+Step6:- Once a function is deployed you shall see the following Kubernetes resources
+created:
+$ kubectl get pods,svc,deployment -l function=order-handler
+
+Step7:- Deploying NATS trigger
+kubeless trigger nats create order-handler --function-selector
+created-by=kubeless,function=order-handler --trigger-topic order
+
+Step8:Triggering the function
+When there is a published event in the NATS topic queue, NATS server invokes NATS
+trigger controller as it is subscribed to the topic.
+$ kubeless trigger nats publish --url nats://demo.nats.io --topic order --message "Hello World"
+Once message is published you shall see a log in the pod running the function like below.
+$ kubectl logs order-handler-6df8c7c849-v8228 (the pod name may differ , need to check using
+kubectl get pods)

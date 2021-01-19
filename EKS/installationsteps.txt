@@ -1,0 +1,88 @@
+Create EKS Kubernetes Cluster: 
+
+The important steps involved are:
+1) Creating a Master Node
+2) Installing and Configuring AWS CLI & kubectl
+3) Creating a Worker Node
+
+Step 1: The very first thing is to create an AWS account. If you don’t have an AWS Free Tier account please refer – Create AWS Free Tier Account
+
+Step 2: Next step is to create a Master Node, follow the below steps to create one.
+a) Log in to the AWS portal, find the Kubernetes Service by searching for EKS and click on Create Kubernetes Cluster and then specify the name for the Cluster.
+b) Next is to create the role, click on “Create role” -> AWS Service -> EKS (from AWS Services) -> Select EKS Cluster -> Next Permissions
+Minimum policy requirement for EKS are mention below:
+
+EKS user Role Policies:
+
+1.AmazonEC2FullAccess 
+2.IAMFullAccess 
+3.AWSCloudFormationFullAccess 
+
+4. EKS-Kubectl-Dev-Sandbox-InlinePolicy :
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        },
+        {
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:479725367499:parameter/aws/*",
+                "arn:aws:ssm:*::parameter/aws/*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "kms:CreateGrant",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
+
+
+5. EKS-Kubernetes-Sandbox-Dev-STS-Policy :
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Step 3: Next step is to Install & configure AWS CLI. Follow the below links and steps for the same;
+
+AWS CLI Credentials Configuration
+Next is to install & configure the kubectl, by checking your Cluster Name & Region Name where the EKS Master node is running from the console. Check the status of Cluster and Configure kubectl with EKS API Server and validate kubectl configuration to master node.
+
+To control cluster from kubectl:
+To check status:
+$ aws eks --region us-west-2 describe-cluster --name <kubernetes-sandbox-dev-new2> --query cluster.status
+To check service running on cluster:
+$ kubectl get svc
+To add cluster:
+$  aws eks --region us-west-2 update-kubeconfig  --name <cluster name> 
+
+Step 4: The final step is to verify the Worker node status from Kubectl. For the same perform the given command:
+$ kubectl get nodes --watch
+ 
+
+
+

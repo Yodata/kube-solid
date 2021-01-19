@@ -1,0 +1,10 @@
+Steps to deploy:
+
+1) Create zip of lambda files.
+zip -r /home/ubuntu/TestLambda3 .
+
+2) You create it with:
+kubeless function deploy custom-deps --from-file TestLambda4.zip --handler index.index --runtime nodejs
+
+3) You call it with:
+kubeless function call custom-deps --data '{"num1": 10, "num2" : 20}'

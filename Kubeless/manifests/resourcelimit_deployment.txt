@@ -1,0 +1,6 @@
+$ kubectl edit deploy <deployment name>
+ADD this under the container spec of deployment
+
+resources:
+   requests:
+     cpu: 200m

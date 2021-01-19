@@ -1,0 +1,58 @@
+Kubernetes cluster:
+
+Step 1: Install Docker
+1. Update the package list with the command:
+$ sudo apt-get update
+2. Next, install Docker with the command:
+$ sudo apt-get install docker.io
+3. Check the installation (and version) by entering the following:
+$ docker ––version
+
+Step 2: Start and Enable Docker
+1. Set Docker to launch at boot by entering the following:
+$ sudo systemctl enable docker
+2. Verify Docker is running:
+$ sudo systemctl status docker
+To start Docker if it’s not running:
+$ sudo systemctl start docker
+3. Repeat on all the other nodes.
+
+Step 3: Add Kubernetes Signing Key
+1. Enter the following to add a signing key:
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+
+Step 4: Add Software Repositories
+Kubernetes is not included in the default repositories. To add them, enter the following:
+$ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+
+Step 5: Kubernetes Installation Tools
+1. Install Kubernetes tools with the command:
+$ sudo apt-get install kubeadm kubelet kubectl
+$ sudo apt-mark hold kubeadm kubelet kubectl
+Allow the process to complete.
+2. Verify the installation with:
+$ kubeadm version
+
+Step 6: Assign Unique Hostname for Each Server Node
+$ sudo hostnamectl set-hostname master-node
+Next, set a worker node hostname by entering the following on the worker server:
+$ sudo hostnamectl set-hostname worker01
+
+Step 7: Initialize Kubernetes on Master Node
+Switch to the master server node, and enter the following:
+$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16Next, enter the following to create a directory for the cluster:
+kubernetes-master:~$ mkdir -p $HOME/.kube
+kubernetes-master:~$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+kubernetes-master:~$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Step 8: Deploy Pod Network to Cluster
+$ sudo kubectl apply -f
+https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+Verify that everything is running and communicating:
+$ kubectl get pods --all-namespaces
+
+Step 9: Join Worker Node to Cluster
+$ kubeadm join --discovery-token abcdef.1234567890abcdef --discovery-token-ca-cert-hash
+sha256:1234..cdef 1.2.3.4:6443
+Switch to the master server, and enter:
+$ kubectl get nodes

@@ -1,0 +1,35 @@
+Open Faas (Function as a service) is a framework for creating serverless functions on Kubernetes or Docker.
+It supports node12, python, Go, java11(java8 is unsupportable)
+
+To install openfass:
+Step1:- $ curl -sSL https://cli.openfaas.com | sudo -E sh
+Step2:- $ curl -sLS https://dl.get-arkade.dev | sudo sh
+Step3:- $ arkade install openfaas
+
+After install lets deploy a java function and invoke it.
+
+Step 1:- $ faas-cli new --lang java11 java-fn
+Step2:- $Docker login
+Step3- $ faas-cli new --lang java11 hello-java --prefix=$username
+Step4- $ sudo faas-cli build -f hello-java.yml
+Step5:- open same new terminal and run it and let it run
+$ kubectl port-forward -n openfaas svc/gateway 8080:8080
+Step6:- Sudo faas-cli push -f hello-java.yml
+Step7: Generate password
+$ PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+Step8:- check if password exits
+$ env | grep PASSWORD
+Step9:- now login to fass cli
+$ echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+Step10:- Deploy function
+$ faas-cli deploy -f hello-java.yml -g http://127.0.0.1:8080
+Check if deployment is successful
+$ kubectl get pods -n openfaas-fn
+Step11:- testing our function
+echo "" | faas-cli invoke hello-java
+Step 12:- Open ui of openafass by IP:31112
+=> This will give you password and admin is user
+PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo) && echo $PASSWORD
+
+
+

@@ -1,0 +1,70 @@
+Kubeless is a Kubernetes-native serverless framework that lets you deploy small bits of code(functions) without having to worry about the underlying infrastructure. It is designed to be deployed on top of a Kubernetes cluster and take advantage of all the great Kubernetes primitives.If you are looking for an open source serverless solution that clones what you can find on AWS Lambda, Azure Functions, and Google Cloud Functions, Kubeless is for you.
+Kubeless Includes:
+● Support for Python, Node.js, Ruby, PHP, Golang, .NET, Ballerina and custom runtimes
+● CLI compliant with AWS Lambda CLI
+● Event triggers using Kafka messaging system and HTTP events
+● Prometheus monitoring of functions calls and function latency by default
+● Serverless Framework plugin
+Reference:
+https://kubeless.io/
+
+Step to install kubeless:-
+$ export RELEASE=$(curl -s https://api.github.com/repos/kubeless/kubeless/releases/latest | grep tag_name | cut -d '"' -f 4)
+$ kubectl create ns kubeless
+$ kubectl create -f https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless-$RELEASE.yaml
+$ kubectl get pods -n kubeless
+$ kubectl get deployment -n kubeless
+$ kubectl get customresourcedefinition
+$ export OS=$(uname -s| tr '[:upper:]' '[:lower:]')
+$curl -OL https://github.com/kubeless/kubeless/releases/download/$RELEASE/kubeless_$OS-amd64.zip
+$ unzip kubeless_$OS-amd64.zip
+$ sudo mv bundles/kubeless_$OS-amd64/kubeless /usr/local/bin/
+
+Sample function:
+
+You can use the CLI to create a function
+For example:-
+
+Python Example:-
+test.py
+def hello(event, context):
+ print event
+ return event['data']
+
+You create it with:
+$ kubeless function deploy hello --runtime python2.7 --from-file test.py --handler test.hello
+You will see the function custom resource created:
+
+$ kubectl get functions
+
+You call it with:
+$ kubeless function call hello --data 'Hello world'
+Output: Hello world!
+
+JAVA Example:-
+package io.kubeless;import io.kubeless.Context;
+import io.kubeless.Event;
+public class MyHandler {
+  public String handle(Event event, Context context) {
+  return event.Data; } }
+
+You create it with:
+$ kubeless function deploy my-handler --runtime java1.8 --handler MyHandler.handle --from-file src/main/java/io/kubeless/MyHandler.java
+You call it with:
+$ kubeless function call my-handler --data "It works"
+
+Nodejs Example:
+module.exports =
+{
+foo: function (event, context) {
+return 'hello world!';
+}
+}
+
+You create it with:
+$kubeless function deploy get-nodejs --runtime nodejs10 --handler helloget.foo --from-file nodejs/helloget.js
+You call it with:
+$kubeless function call get-nodejs |egrep hello.world
+
+To get logs:
+kubectl logs -n kubeless -l kubeless=controller
