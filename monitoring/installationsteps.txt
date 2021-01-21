@@ -27,3 +27,8 @@ To check the load balancer running for Prometheus and Grafana:
 kubectl get svc -n monitoring
 
 Check names of monitoring-grafana & monitoring-kube-prometheus-prometheus 
+
+The default login creds for Grafana are:
+
+user: admin
+pass: prom-operator
