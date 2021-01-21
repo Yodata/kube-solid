@@ -22,6 +22,13 @@ Get this dashboard:
 
 Then create a datasource on prometheus to add in garafana.
 
+Steps:
+
+To install prometheus and grafana:
+
+kubectl apply -f eks-monitoring.yaml
+kubectl apply -f crds.yaml
+
 To check the load balancer running for Prometheus and Grafana:
 
 kubectl get svc -n monitoring
