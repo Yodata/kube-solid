@@ -1,0 +1,3 @@
+kubectl apply -f pods.yaml
+kubectl apply -f services.yaml
+
