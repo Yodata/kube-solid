@@ -1,0 +1,5 @@
+Steps to Install ELK:
+
+kubectl apply -f storage-aws.yaml
+kubectl apply -f fluentd-config.yaml
+kubectl apply -f elastic-stack.yaml
