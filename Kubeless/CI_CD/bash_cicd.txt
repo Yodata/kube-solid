@@ -1,0 +1,9 @@
+/bin/bash
+if  kubectl get functions | grep "my-handler1v" ;
+then
+     kubeless function update my-handler1v --runtime java1.8 --handler MyHandler.handle --from-file /home/ubuntu/MyHandler.java
+     echo "Function updated sucessfully"
+else
+      kubeless function deploy my-handler1v --runtime java1.8 --handler MyHandler.handle --from-file /home/ubuntu/MyHandler.java
+      echo "Function deploy sucessfully"
+fi

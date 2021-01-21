@@ -21,3 +21,9 @@ Get this dashboard:
 9673
 
 Then create a datasource on prometheus to add in garafana.
+
+To check the load balancer running for Prometheus and Grafana:
+
+kubectl get svc -n monitoring
+
+Check names of monitoring-grafana & monitoring-kube-prometheus-prometheus 
